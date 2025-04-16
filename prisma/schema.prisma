@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Producer {
+  id        String   @id @default(uuid())
+  document  String   @unique // CPF ou CNPJ
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  farms     Farm[]
+
+  @@map("producers")
+}
+
+model Farm {
+  id                  String    @id @default(uuid())
+  name                String
+  city                String
+  state               String
+  totalArea           Float
+  cultivableArea      Float
+  vegetationArea      Float
+  producerId          String
+  producer            Producer  @relation(fields: [producerId], references: [id], onDelete: Cascade)
+  cropPlantings       CropPlanting[]
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@map("farms")
+}
+
+model Crop {
+  id            String         @id @default(uuid())
+  name          String         @unique
+  cropPlantings CropPlanting[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("crops")
+}
+
+model Harvest {
+  id            String         @id @default(uuid())
+  name          String         @unique // Ex: "Safra 2021"
+  year          Int
+  cropPlantings CropPlanting[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("harvests")
+}
+
+model CropPlanting {
+  id         String   @id @default(uuid())
+  farmId     String
+  farm       Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  cropId     String
+  crop       Crop     @relation(fields: [cropId], references: [id], onDelete: Cascade)
+  harvestId  String
+  harvest    Harvest  @relation(fields: [harvestId], references: [id], onDelete: Cascade)
+  area       Float    // área plantada em hectares
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("crop_plantings")
+}
