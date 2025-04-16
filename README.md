@@ -103,7 +103,6 @@ src/
 
 - 📄 OpenAPI disponível via Swagger: `http://localhost:3000/api`
 - ✍️ API Contracts definidos por DTOs com `class-validator`
-- 🧭 Diagrama de entidades e relações disponível no arquivo `docs/diagram.png` (opcional)
 
 ---
 
